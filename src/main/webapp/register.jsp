@@ -28,6 +28,9 @@
         <label for="email" style="text-align: left; font-weight: bold;">Email:</label>
         <input name="email" type="email" required id="email" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
 
+        <label for="password" style="text-align: left; font-weight: bold;">Password:</label>
+        <input name="password" type="password" required id="password" style="padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+
         <input type="submit" value="Register"
                style="padding: 10px; background-color: #007bff; color: white; font-size: 16px; border: none; border-radius: 5px; cursor: pointer; margin-top: 10px;">
     </form>
