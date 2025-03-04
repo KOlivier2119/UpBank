@@ -82,8 +82,8 @@
     <h1>Welcome to UpBank</h1>
     <p>Your trusted digital banking solution for a seamless financial experience.</p>
     <div class="display">
-    <a href="register.jsp" class="btn">Get Started - Register Now</a>
-    <a href="login.jsp" class="btn">Login</a>
+    <a href="registerPage" class="btn">Get Started - Register Now</a>
+    <a href="loginPage" class="btn">Login</a>
     </div>
 </div>
 

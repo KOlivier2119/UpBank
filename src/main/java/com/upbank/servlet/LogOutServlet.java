@@ -33,6 +33,6 @@ public class LogOutServlet extends HttpServlet {
         }
 
 
-        response.sendRedirect(request.getContextPath() + "/login.jsp");
+        response.sendRedirect(request.getContextPath() + "/loginPage");
     }
 }

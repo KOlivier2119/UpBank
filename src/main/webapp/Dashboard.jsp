@@ -1,17 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ page import="com.upbank.model.User" %>
+<%@ page import="com.upbank.model.Transaction" %>
+<%@ page import="java.util.List" %>
 <%
-
     response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
     response.setHeader("Pragma", "no-cache"); // HTTP 1.0
     response.setHeader("Expires", "0"); // Proxies
 
-
     User user = (User) session.getAttribute("user");
     if (user == null) {
-        response.sendRedirect("login.jsp");
+        response.sendRedirect("/UpBank_war_exploded/loginPage");
         return;
     }
+
+    double balance = (double) session.getAttribute("balance");
+    List<Transaction> transactions = (List<Transaction>) session.getAttribute("transactions");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -58,15 +61,6 @@
             <li class="nav-item active">
                 <a class="nav-link" href="#">Dashboard</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Accounts</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Transactions</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Reports</a>
-            </li>
         </ul>
         <ul class="navbar-nav">
             <li class="nav-item">
@@ -80,6 +74,40 @@
 <div class="container-fluid dashboard-header">
     <h2>Welcome, <%= user.getFirstName() %>!</h2>
 
+    <!-- Deposit and Withdrawal Forms -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Deposit Money</div>
+                <div class="card-body">
+                    <form action="${pageContext.request.contextPath}/transaction" method="post">
+                        <input type="hidden" name="action" value="deposit">
+                        <div class="form-group">
+                            <label for="depositAmount">Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="depositAmount" name="amount" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Deposit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">Withdraw Money</div>
+                <div class="card-body">
+                    <form action="${pageContext.request.contextPath}/transaction" method="post">
+                        <input type="hidden" name="action" value="withdraw">
+                        <div class="form-group">
+                            <label for="withdrawAmount">Amount</label>
+                            <input type="number" step="0.01" class="form-control" id="withdrawAmount" name="amount" required>
+                        </div>
+                        <button type="submit" class="btn btn-danger">Withdraw</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <!-- Left Column: Charts & Overview -->
         <div class="col-md-8">
@@ -87,8 +115,8 @@
             <div class="card text-white bg-success">
                 <div class="card-header">Account Balance</div>
                 <div class="card-body">
-                    <p class="balance">$2,500.00</p>
-                    <p>Last updated: March 4, 2025</p>
+                    <p class="balance">$<%= String.format("%.2f", balance) %></p>
+                    <p>Last updated: <%= new java.util.Date() %></p>
                 </div>
             </div>
 
@@ -116,11 +144,15 @@
                 <div class="card-header">Recent Transactions</div>
                 <div class="card-body">
                     <ul class="list-group">
-                        <li class="list-group-item">Payment to ABC Store - $50.00</li>
-                        <li class="list-group-item">Salary Credit - $2000.00</li>
-                        <li class="list-group-item">Online Purchase - $75.00</li>
-                        <li class="list-group-item">Utility Bill - $120.00</li>
-                        <li class="list-group-item">Transfer Received - $300.00</li>
+                        <% if (transactions != null) {
+                            for (Transaction transaction : transactions) { %>
+                        <li class="list-group-item">
+                            <%= transaction.getType() %>: $<%= String.format("%.2f", transaction.getAmount()) %> (<%= transaction.getDate() %>)
+                        </li>
+                        <% }
+                        } else { %>
+                        <li class="list-group-item">No transactions found.</li>
+                        <% } %>
                     </ul>
                 </div>
             </div>
@@ -151,7 +183,7 @@
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [{
                 label: 'Account Balance',
-                data: [1500, 1700, 1600, 1800, 1750, 2500],
+                data: [1500, 1700, 1600, 1800, 1750, <%= balance %>],
                 backgroundColor: 'rgba(0, 123, 255, 0.2)',
                 borderColor: 'rgba(0, 123, 255, 1)',
                 borderWidth: 2,

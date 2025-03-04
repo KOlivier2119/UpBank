@@ -25,17 +25,17 @@ public class RegisterServlet extends HttpServlet {
         if (userDAO.isEmailTaken(email)) {
 
             request.setAttribute("errorMessage", "Email is already registered!");
-            request.getRequestDispatcher("register.jsp").forward(request, response);
+            request.getRequestDispatcher("/registerPage").forward(request, response);
         } else {
 
             User user = new User(firstname, lastname, email, password, language);
 
             boolean registrationSuccess = userDAO.registerUser(user);
             if (registrationSuccess) {
-                response.sendRedirect("login.jsp");
+                response.sendRedirect("/UpBank_war_exploded/loginPage");
             } else {
                 request.setAttribute("errorMessage", "An error occurred during registration. Please try again.");
-                request.getRequestDispatcher("register.jsp").forward(request, response);
+                request.getRequestDispatcher("/registerPage").forward(request, response);
             }
         }
     }
