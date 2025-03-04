@@ -56,6 +56,7 @@
             border-radius: 6px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
             transition: background-color 0.3s ease;
+            margin-bottom: 10px;
         }
 
         .btn:hover {
@@ -68,6 +69,11 @@
             font-size: 0.9em;
             color: #888;
         }
+
+        .display {
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 </head>
 <body>
@@ -75,8 +81,10 @@
 <div class="container">
     <h1>Welcome to UpBank</h1>
     <p>Your trusted digital banking solution for a seamless financial experience.</p>
+    <div class="display">
     <a href="register.jsp" class="btn">Get Started - Register Now</a>
     <a href="login.jsp" class="btn">Login</a>
+    </div>
 </div>
 
 <div class="footer">

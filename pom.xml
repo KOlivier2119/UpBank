@@ -11,20 +11,16 @@
     <packaging>war</packaging>
 
     <properties>
-        <!-- Set the version of Jakarta EE and Jakarta Persistence you want to use -->
-        <jakartaee.version>9.1.0</jakartaee.version> <!-- Jakarta EE version -->
-        <jakarta.persistence.version>3.0.0</jakarta.persistence.version> <!-- Jakarta Persistence version -->
-        <jakarta.servlet.version>5.0.0</jakarta.servlet.version> <!-- Jakarta Servlet version -->
-        <jakarta.el.version>4.0.0</jakarta.el.version> <!-- Jakarta Expression Language version -->
-        <maven.compiler.target>11</maven.compiler.target> <!-- Target Java version -->
-        <maven.compiler.source>11</maven.compiler.source> <!-- Source Java version -->
+        <!-- Jakarta EE and related versions -->
+        <jakartaee.version>9.1.0</jakartaee.version>
+        <jakarta.persistence.version>3.0.0</jakarta.persistence.version>
+        <jakarta.servlet.version>5.0.0</jakarta.servlet.version>
+        <jakarta.el.version>4.0.0</jakarta.el.version>
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
     </properties>
 
     <dependencies>
-        <!-- Jakarta EE API -->
-
-
-        <!-- Jakarta Persistence (JPA) -->
         <!-- https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api -->
         <dependency>
             <groupId>jakarta.persistence</groupId>
@@ -32,12 +28,22 @@
             <version>3.1.0</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+
+        <!-- Jakarta Servlet API -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
             <version>6.1.0</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!-- PostgreSQL JDBC Driver -->
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.3</version>
         </dependency>
 
 
@@ -54,6 +60,15 @@
             <version>5.11.0</version>
             <scope>test</scope>
         </dependency>
+
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.3.1.Final</version>
+        </dependency>
+
     </dependencies>
 
     <build>

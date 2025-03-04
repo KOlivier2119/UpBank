@@ -2,80 +2,94 @@ package com.upbank.dao;
 
 import com.upbank.model.User;
 import com.upbank.config.DatabaseConfig;
-import jakarta.persistence.*;
+import java.sql.*;
 
 public class UserDAO {
 
-    private EntityManagerFactory emf = DatabaseConfig.getEntityManagerFactory();
-
     // Register a new user in the database
     public boolean registerUser(User user) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.getTransaction().begin();
-            em.persist(user);
-            em.getTransaction().commit();
-            return true;
-        } catch (Exception e) {
+        String sql = "INSERT INTO users (first_name, last_name, email, password, language) VALUES (?, ?, ?, ?, ?)";
+
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, user.getFirstName());
+            statement.setString(2, user.getLastName());
+            statement.setString(3, user.getEmail());
+            statement.setString(4, user.getPassword());
+            statement.setString(5, user.getLanguage());
+
+            int rowsAffected = statement.executeUpdate();
+            return rowsAffected > 0; // Return true if at least one row was inserted
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        } finally {
-            em.close();
         }
     }
 
     // Validate user login credentials (email and password)
     public boolean validateUser(String email, String password) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            String query = "SELECT u FROM User u WHERE u.email = :email AND u.password = :password";
-            TypedQuery<User> typedQuery = em.createQuery(query, User.class);
-            typedQuery.setParameter("email", email);
-            typedQuery.setParameter("password", password);
+        String sql = "SELECT * FROM users WHERE email = ? AND password = ?";
 
-            User user = typedQuery.getResultList().stream().findFirst().orElse(null);
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            return user != null; // Return true if user found, otherwise false
-        } catch (Exception e) {
+            statement.setString(1, email);
+            statement.setString(2, password);
+
+            ResultSet resultSet = statement.executeQuery();
+            return resultSet.next(); // Returns true if there is a matching user
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        } finally {
-            em.close();
         }
     }
 
     // Check if email already exists in the database (for registration)
     public boolean isEmailTaken(String email) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            String query = "SELECT COUNT(u) FROM User u WHERE u.email = :email";
-            TypedQuery<Long> typedQuery = em.createQuery(query, Long.class);
-            typedQuery.setParameter("email", email);
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
 
-            Long count = typedQuery.getSingleResult();
-            return count > 0; // Return true if email exists
-        } catch (Exception e) {
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, email);
+
+            ResultSet resultSet = statement.executeQuery();
+            resultSet.next();
+            long count = resultSet.getLong(1); // Get the count from the result set
+            return count > 0; // Return true if the email exists
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        } finally {
-            em.close();
         }
     }
 
     // Get a user by email (for fetching user details, etc.)
     public User getUserByEmail(String email) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            String query = "SELECT u FROM User u WHERE u.email = :email";
-            TypedQuery<User> typedQuery = em.createQuery(query, User.class);
-            typedQuery.setParameter("email", email);
+        String sql = "SELECT * FROM users WHERE email = ?";
 
-            return typedQuery.getResultList().stream().findFirst().orElse(null); // Return the user or null
-        } catch (Exception e) {
+        try (Connection connection = DatabaseConfig.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, email);
+
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                // If a user is found, create a User object and return it
+                User user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setFirstName(resultSet.getString("first_name"));
+                user.setLastName(resultSet.getString("last_name"));
+                user.setEmail(resultSet.getString("email"));
+                user.setPassword(resultSet.getString("password"));
+                user.setLanguage(resultSet.getString("language"));
+
+                return user;
+            }
+            return null; // Return null if no user is found
+        } catch (SQLException e) {
             e.printStackTrace();
             return null;
-        } finally {
-            em.close();
         }
     }
 }

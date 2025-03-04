@@ -22,7 +22,7 @@ public class LoginServlet extends HttpServlet {
             // Successful login: Redirect to the dashboard
             HttpSession session = request.getSession();
             session.setAttribute("user", user); // Store the user object in the session
-            response.sendRedirect("dashboard.jsp"); // Redirect to the dashboard page
+            response.sendRedirect("Dashboard.jsp"); // Redirect to the dashboard page
         } else {
             // Invalid login: Show error message
             request.setAttribute("errorMessage", "Invalid email or password.");
