@@ -143,12 +143,7 @@
 <div class="form-container">
     <form method="post" action="registerServlet">
 
-        <label id="firstNameLabel">First Name</label>
-        <input id="firstname" name="firstname" required type="text" placeholder="Enter your first name">
-
-        <label id="lastNameLabel">Last Name</label>
-        <input id="lastname" name="lastname" required type="text" placeholder="Enter your last name">
-
+        <!-- Language Selection Comes First -->
         <div class="language-select">
             <label for="language">Select Language</label>
             <select name="language" id="language" required onchange="changeLanguage()">
@@ -159,6 +154,12 @@
                 <option value="Russian">Russian</option>
             </select>
         </div>
+
+        <label id="firstNameLabel">First Name</label>
+        <input id="firstname" name="firstname" required type="text" placeholder="Enter your first name">
+
+        <label id="lastNameLabel">Last Name</label>
+        <input id="lastname" name="lastname" required type="text" placeholder="Enter your last name">
 
         <label id="emailLabel">Email</label>
         <input id="email" name="email" required type="email" placeholder="Enter your email address">

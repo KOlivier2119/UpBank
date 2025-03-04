@@ -1,4 +1,18 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page import="com.upbank.model.User" %>
+<%
+
+    response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1
+    response.setHeader("Pragma", "no-cache"); // HTTP 1.0
+    response.setHeader("Expires", "0"); // Proxies
+
+
+    User user = (User) session.getAttribute("user");
+    if (user == null) {
+        response.sendRedirect("login.jsp");
+        return;
+    }
+%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +38,10 @@
         }
         .logout-btn {
             color: #fff;
+        }
+        .balance {
+            font-size: 1.5rem;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -52,7 +70,6 @@
         </ul>
         <ul class="navbar-nav">
             <li class="nav-item">
-                <!-- This link should point to your logout servlet or page -->
                 <a class="nav-link logout-btn" href="${pageContext.request.contextPath}/logout">Logout</a>
             </li>
         </ul>
@@ -61,35 +78,42 @@
 
 <!-- Main Dashboard Container -->
 <div class="container-fluid dashboard-header">
+    <h2>Welcome, <%= user.getFirstName() %>!</h2>
+
     <div class="row">
-        <!-- Left Column: Charts -->
+        <!-- Left Column: Charts & Overview -->
         <div class="col-md-8">
+            <!-- Account Balance Card -->
+            <div class="card text-white bg-success">
+                <div class="card-header">Account Balance</div>
+                <div class="card-body">
+                    <p class="balance">$2,500.00</p>
+                    <p>Last updated: March 4, 2025</p>
+                </div>
+            </div>
+
             <!-- Account Balance Over Time Chart -->
             <div class="card">
-                <div class="card-header">
-                    Account Balance Over Time
-                </div>
+                <div class="card-header">Account Balance Over Time</div>
                 <div class="card-body">
                     <canvas id="balanceChart" height="150"></canvas>
                 </div>
             </div>
+
             <!-- Expense Distribution Chart -->
             <div class="card">
-                <div class="card-header">
-                    Expense Distribution
-                </div>
+                <div class="card-header">Expense Distribution</div>
                 <div class="card-body">
                     <canvas id="expenseChart" height="150"></canvas>
                 </div>
             </div>
         </div>
-        <!-- Right Column: Recent Activity -->
+
+        <!-- Right Column: Recent Activity & Notifications -->
         <div class="col-md-4">
             <!-- Recent Transactions -->
             <div class="card">
-                <div class="card-header">
-                    Recent Transactions
-                </div>
+                <div class="card-header">Recent Transactions</div>
                 <div class="card-body">
                     <ul class="list-group">
                         <li class="list-group-item">Payment to ABC Store - $50.00</li>
@@ -100,11 +124,10 @@
                     </ul>
                 </div>
             </div>
+
             <!-- Notifications -->
             <div class="card mt-3">
-                <div class="card-header">
-                    Notifications
-                </div>
+                <div class="card-header">Notifications</div>
                 <div class="card-body">
                     <p>No new notifications</p>
                 </div>
@@ -128,7 +151,7 @@
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
             datasets: [{
                 label: 'Account Balance',
-                data: [1500, 1700, 1600, 1800, 1750, 1900],
+                data: [1500, 1700, 1600, 1800, 1750, 2500],
                 backgroundColor: 'rgba(0, 123, 255, 0.2)',
                 borderColor: 'rgba(0, 123, 255, 1)',
                 borderWidth: 2,

@@ -12,13 +12,27 @@ import java.io.IOException;
 public class LogOutServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Get the current session, if one exists
+
         HttpSession session = request.getSession(false);
         if (session != null) {
-            // Invalidate the session to log the user out
             session.invalidate();
+            System.out.println("Session invalidated successfully.");
         }
-        // Redirect to the login page (adjust the URL if necessary)
-        response.sendRedirect("login.jsp");
+
+
+        jakarta.servlet.http.Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (jakarta.servlet.http.Cookie cookie : cookies) {
+                if (cookie.getName().equals("JSESSIONID")) {
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                    System.out.println("Session cookie deleted.");
+                }
+            }
+        }
+
+
+        response.sendRedirect(request.getContextPath() + "/login.jsp");
     }
 }
