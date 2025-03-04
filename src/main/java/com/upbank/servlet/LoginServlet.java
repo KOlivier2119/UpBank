@@ -1,13 +1,11 @@
 package com.upbank.servlet;
 
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.upbank.dao.UserDAO;
+import com.upbank.model.User;
 
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.*;
 import java.io.IOException;
-import java.io.PrintWriter;
 
 public class LoginServlet extends HttpServlet {
 
@@ -16,11 +14,19 @@ public class LoginServlet extends HttpServlet {
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
-        // Logic to authenticate user (check in database)
+        // Assuming a UserDAO exists to validate credentials from the database
+        UserDAO userDAO = new UserDAO();
+        boolean user = userDAO.validateUser(email, password);
 
-        // Simple login success message (you would replace this with real authentication logic)
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        out.println("<h3>Welcome back, " + email + "!</h3>");
+        if (user) {
+            // Successful login: Redirect to the dashboard
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user); // Store the user object in the session
+            response.sendRedirect("dashboard.jsp"); // Redirect to the dashboard page
+        } else {
+            // Invalid login: Show error message
+            request.setAttribute("errorMessage", "Invalid email or password.");
+            request.getRequestDispatcher("login.jsp").forward(request, response); // Forward back to login page
+        }
     }
 }

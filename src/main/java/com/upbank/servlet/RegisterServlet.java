@@ -1,5 +1,7 @@
 package com.upbank.servlet;
 
+import com.upbank.dao.UserDAO;
+import com.upbank.model.User;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -7,7 +9,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 
 public class RegisterServlet extends HttpServlet {
@@ -20,11 +21,23 @@ public class RegisterServlet extends HttpServlet {
         String language = request.getParameter("language");
         String password = request.getParameter("password");
 
-        // Logic for storing user in the database (or processing it)
+        // Check if the email is already taken
+        UserDAO userDAO = new UserDAO();
+        if (userDAO.isEmailTaken(email)) {
+            // If email is already taken, show an error message
+            request.setAttribute("errorMessage", "Email is already registered!");
+            request.getRequestDispatcher("register.jsp").forward(request, response);
+        } else {
+            // If email is not taken, create a new User object and register
+            User user = new User(firstname, lastname, email, password, language);
 
-        // Response after registration (Simple response)
-        response.setContentType("text/html");
-        PrintWriter out = response.getWriter();
-        out.println("<h3>User " + firstname + " registered successfully!</h3>");
+            boolean registrationSuccess = userDAO.registerUser(user);
+            if (registrationSuccess) {
+                response.sendRedirect("login.jsp"); // Redirect to login after successful registration
+            } else {
+                request.setAttribute("errorMessage", "An error occurred during registration. Please try again.");
+                request.getRequestDispatcher("register.jsp").forward(request, response);
+            }
+        }
     }
 }

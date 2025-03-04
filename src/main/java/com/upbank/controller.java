@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
-@WebServlet("/register")
+
  class RegisterServlet extends HttpServlet {
     private UserDAO userDAO = new UserDAO();
 
@@ -17,8 +17,9 @@ import jakarta.servlet.annotation.*;
         String lastName = request.getParameter("lastname");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String language = request.getParameter("language");
 
-        User user = new User(firstName, lastName, email, password);
+        User user = new User(firstName, lastName, email, password,  language);
 
         if (userDAO.registerUser(user)) {
             response.sendRedirect("login.jsp");
