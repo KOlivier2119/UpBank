@@ -16,6 +16,8 @@
   String lastname = request.getParameter("lastname");
   String email = request.getParameter("email");
   String password = request.getParameter("password");
+
+
 %>
 </body>
 </html>
